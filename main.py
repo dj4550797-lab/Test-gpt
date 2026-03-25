@@ -13,9 +13,9 @@ STICKER_ID = "CAACAgIAAxkBAAM1acJAy74JHRwQ2l2fFq1r-hVjcPYAAvUAA_cCyA9HRphh0VDIsR
 # 1. ADD MODELS HERE
 # Format: "Display Name": "OpenRouter Model ID"
 AVAILABLE_MODELS = {
-    "DeepSeek V3": "deepseek/deepseek-chat",
-    "DeepSeek R1": "deepseek/deepseek-r1",
-    "Gemini Flash 2.0": "google/gemini-2.0-flash-001",
+    "GPT-5.4 Mini": "openai/gpt-5.4-mini",
+    "Nano Banana Pro": "google/gemini-3-pro-image-preview",
+    "Gemini 2.5 Pro": "google/gemini-2.5-pro",
     "GPT-4o Mini": "openai/gpt-4o-mini"
 }
 
