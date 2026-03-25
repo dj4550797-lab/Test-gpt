@@ -5,43 +5,31 @@ from flask import Flask
 from threading import Thread
 from openai import OpenAI
 import time
-import logging
-
-# Set up logging to see errors in Render logs
-logging.basicConfig(level=logging.INFO)
 
 # --- 1. CONFIGURATION ---
-# IMPORTANT: Make sure these names match exactly in Render Environment Variables
 BOT_TOKEN = os.environ.get('BOT_TOKEN')
 OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY')
 STICKER_ID = "CAACAgIAAxkBAAM1acJAy74JHRwQ2l2fFq1r-hVjcPYAAvUAA_cCyA9HRphh0VDIsR4E"
 
-# --- 2. MODELS LIST ---
-# Note: google/gemini-3 and gpt-5 do not exist yet. 
-# I am including them as you requested, but they may return errors when used.
+# --- 2. UPDATED MODELS (Using Real OpenRouter IDs) ---
 AVAILABLE_MODELS = {
-    "Gemini 3 Pro (Preview)": "google/gemini-3-pro-image-preview",
-    "Gemini 2.5 Pro": "google/gemini-2.5-pro",
+    "Gemini 2.0 Flash (Fast)": "google/gemini-2.0-flash-001",
     "GPT-4o Mini": "openai/gpt-4o-mini",
-    "GPT-5.4 Mini": "openai/gpt-5.4-mini",
-    "DeepSeek V3": "deepseek/deepseek-chat"
+    "DeepSeek V3": "deepseek/deepseek-chat",
+    "Llama 3.3 70B": "meta-llama/llama-3.3-70b-instruct"
 }
 
 current_model = "openai/gpt-4o-mini"
 
 # --- 3. INITIALIZATION ---
-try:
-    bot = telebot.TeleBot(BOT_TOKEN)
-    client = OpenAI(
-        base_url="https://openrouter.ai/api/v1",
-        api_key=OPENROUTER_API_KEY,
-    )
-except Exception as e:
-    print(f"CRITICAL ERROR during init: {e}")
+bot = telebot.TeleBot(BOT_TOKEN)
+client = OpenAI(
+    base_url="https://openrouter.ai/api/v1",
+    api_key=OPENROUTER_API_KEY,
+)
 
 app = Flask(__name__)
 
-# --- 4. FLASK SERVER ---
 @app.route('/')
 def home():
     return "Flixora GPT is Online!"
@@ -50,7 +38,7 @@ def run_flask():
     port = int(os.environ.get("PORT", 8080))
     app.run(host='0.0.0.0', port=port)
 
-# --- 5. BOT LOGIC ---
+# --- 4. BOT COMMANDS ---
 @bot.message_handler(commands=['model'])
 def switch_model(message):
     markup = types.InlineKeyboardMarkup(row_width=1)
@@ -68,38 +56,39 @@ def handle_selection(call):
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
-    bot.reply_to(message, "👋 Welcome! I am **Flixora GPT**.\nUse /model to switch AI models.", parse_mode='Markdown')
+    bot.reply_to(message, "👋 Welcome to **Flixora GPT**!\nUse /model to switch AI models.", parse_mode='Markdown')
 
+# --- 5. MAIN CHAT LOGIC (Fixed for 402 Error) ---
 @bot.message_handler(func=lambda message: True)
 def handle_chat(message):
     try:
         searching_msg = bot.send_message(message.chat.id, "🔍 *Flixora GPT is searching...*", parse_mode='Markdown')
         bot.send_sticker(message.chat.id, STICKER_ID)
 
+        # We add 'max_tokens' here to fix your 402 Error
         response = client.chat.completions.create(
             model=current_model,
-            messages=[{"role": "user", "content": message.text}]
+            messages=[{"role": "user", "content": message.text}],
+            max_tokens=1000  # <--- THIS FIXES THE CREDIT ISSUE
         )
+        
         ai_answer = response.choices[0].message.content
         bot.reply_to(message, ai_answer, parse_mode='Markdown')
         bot.delete_message(message.chat.id, searching_msg.message_id)
+        
     except Exception as e:
+        # If it still fails, it will show the reason
         bot.send_message(message.chat.id, f"❌ *Error:* {str(e)}")
 
 # --- 6. STARTUP ---
 if __name__ == "__main__":
-    # Start web server
     t = Thread(target=run_flask)
     t.daemon = True
     t.start()
     
-    print("🚀 Starting Flixora GPT...")
-    
-    # Infinite loop to keep the process alive even if polling fails
     while True:
         try:
             bot.remove_webhook()
             bot.infinity_polling(skip_pending=True, timeout=60)
         except Exception as e:
-            print(f"Main Loop Error: {e}")
-            time.sleep(5) # Wait 5 seconds before restarting if it crashes
+            time.sleep(5)
