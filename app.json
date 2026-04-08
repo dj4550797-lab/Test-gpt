@@ -1,0 +1,14 @@
+{
+  "name": "FLIXORA AI PRO",
+  "description": "Premium AI Bot with OpenRouter & HuggingFace integration.",
+  "keywords": ["python", "telegram", "ai", "huggingface"],
+  "env": {
+    "BOT_TOKEN": { "required": true },
+    "MONGO_URI": { "required": true },
+    "LOG_CHANNEL": { "required": true },
+    "ADMIN_IDS": { "required": true },
+    "WEBHOOK_URL": { "description": "https://your-app.onrender.com", "required": true },
+    "OPENROUTER_API_KEY": { "required": true },
+    "HF_TOKEN": { "description": "Hugging Face API Token (Optional)", "required": false }
+  }
+}
