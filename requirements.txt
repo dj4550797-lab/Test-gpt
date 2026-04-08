@@ -1,8 +1,6 @@
 python-telegram-bot==20.7
 flask
 requests
-pymongo
+pymongo[srv]
 python-dotenv
 gunicorn
-cachetools
-huggingface_hub
