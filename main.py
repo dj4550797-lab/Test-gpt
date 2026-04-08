@@ -3,69 +3,73 @@ import telebot
 from telebot import types
 from flask import Flask
 from openai import OpenAI
-import requests
 import threading
 
 # --- CONFIGURATION ---
 TOKEN = os.getenv('BOT_TOKEN')
-HF_TOKEN = os.getenv('HF_TOKEN')
 OPENAI_KEY = os.getenv('OPENAI_API_KEY')
-ADMIN_ID = 12345678  # <--- Change to your Telegram ID
+ADMIN_ID = 12345678  # Replace with your actual Telegram ID
 
 bot = telebot.TeleBot(TOKEN)
 app = Flask(__name__)
 
-# Initialize OpenAI Client (New Version 1.0+)
-client = OpenAI(api_key=OPENAI_KEY)
-
 # --- WEB SERVER FOR RENDER ---
 @app.route('/')
 def health_check():
-    return "Bot is alive!", 200
+    return "Bot is active", 200
 
 def run_flask():
-    # Render provides a PORT environment variable. We must use it.
     port = int(os.environ.get("PORT", 8080))
     app.run(host='0.0.0.0', port=port)
 
-# --- BOT LOGIC ---
+# --- COMMANDS ---
 
 @bot.message_handler(commands=['start'])
 def welcome(message):
     markup = types.InlineKeyboardMarkup(row_width=2)
     btn1 = types.InlineKeyboardButton("➕ Add to Group", url=f"http://t.me/{bot.get_me().username}?startgroup=true")
-    btn2 = types.InlineKeyboardButton("ℹ️ About", callback_data="about")
-    markup.add(btn1, btn2)
+    btn2 = types.InlineKeyboardButton("👨‍💻 Admin", url="https://t.me/YourUsername")
+    btn3 = types.InlineKeyboardButton("📢 Channel", url="https://t.me/YourChannel")
+    markup.add(btn1, btn2, btn3)
     
-    bot.reply_to(message, "👋 Hello! I am your AI Assistant. Send me a message to start chatting!", reply_markup=markup)
+    welcome_text = (
+        f"👋 Welcome {message.from_user.first_name}!\n\n"
+        "I am **GPT Flixora**, your AI assistant.\n\n"
+        "✨ **How to use:**\n"
+        "Just send me a message and I will reply using AI.\n\n"
+        "🛠 **Admin Commands:** /admin (Admin only)"
+    )
+    bot.reply_to(message, welcome_text, reply_markup=markup, parse_mode="Markdown")
+
+@bot.message_handler(commands=['admin'])
+def admin_panel(message):
+    if str(message.from_user.id) != str(ADMIN_ID):
+        bot.reply_to(message, "❌ You are not authorized.")
+        return
+    bot.reply_to(message, "✅ Welcome Admin. Tokens are managed via Render Dashboard.")
+
+# --- CHAT LOGIC ---
 
 @bot.message_handler(func=lambda message: True)
 def handle_ai(message):
-    # Don't reply to other bots
-    if message.from_user.is_bot:
+    if not OPENAI_KEY:
+        bot.reply_to(message, "❌ OpenAI Key is missing in Render Environment Variables!")
         return
 
-    # Show "typing..." action
     bot.send_chat_action(message.chat.id, 'typing')
-
+    
     try:
-        # OpenAI API Call (Updated Syntax)
+        client = OpenAI(api_key=OPENAI_KEY)
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": message.text}]
         )
-        answer = response.choices[0].message.content
-        bot.reply_to(message, answer)
+        bot.reply_to(message, response.choices[0].message.content)
     except Exception as e:
-        print(f"Error: {e}")
-        bot.reply_to(message, "❌ AI Error. Please check if the Admin has set the API Key correctly.")
+        bot.reply_to(message, f"⚠️ Error: {str(e)}")
 
-# --- STARTUP ---
+# --- START ---
 if __name__ == "__main__":
-    # 1. Start Flask in background
     threading.Thread(target=run_flask).start()
-    print("Flask server started.")
-    
-    # 2. Start Bot Polling
-    print("Bot is polling...")
+    print("Bot is starting...")
     bot.infinity_polling()
