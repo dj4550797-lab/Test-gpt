@@ -8,123 +8,133 @@ import threading
 
 # --- CONFIGURATION ---
 TOKEN = os.getenv('BOT_TOKEN')
-HF_TOKEN = os.getenv('HF_TOKEN') # Hugging Face Token
-ADMIN_ID = 12345678  # REPLACE WITH YOUR NUMERIC TELEGRAM ID
-DEFAULT_MODEL = "gpt-3.5-turbo"
+HF_TOKEN = os.getenv('HF_TOKEN')
+ADMIN_ID = 12345678  # <--- CHANGE THIS TO YOUR TELEGRAM ID
 
 bot = telebot.TeleBot(TOKEN)
 app = Flask(__name__)
 
-# Temporary storage (Note: Render disk is ephemeral, data resets on restart)
-user_data = {}
-bot_settings = {
-    "current_model": DEFAULT_MODEL,
-    "openai_key": os.getenv('OPENAI_API_KEY')
+# --- IN-MEMORY DATABASE ---
+# Note: On Render, these reset if the bot restarts. 
+# For permanent storage, connect a database like MongoDB.
+bot_config = {
+    "openai_key": os.getenv('OPENAI_API_KEY', ""),
+    "hf_token": os.getenv('HF_TOKEN', ""),
+    "active_model": "gpt-3.5-turbo",
+    "model_list": ["gpt-3.5-turbo", "gpt-4", "facebook/blenderbot-400M-distill"] 
 }
 
-# --- FLASK SERVER FOR RENDER ---
+# --- FLASK SERVER ---
 @app.route('/')
-def home():
-    return "Bot is running!"
+def home(): return "Bot is Running"
 
 def run_flask():
     app.run(host='0.0.0.0', port=8080)
 
-# --- HELPER FUNCTIONS ---
-def shorten_url(long_url):
-    try:
-        res = requests.get(f"http://tinyurl.com/api-create.php?url={long_url}")
-        return res.text
-    except:
-        return "Error shortening URL."
-
-# --- WELCOME & START ---
-@bot.message_handler(commands=['start', 'help'])
-def send_welcome(message):
-    markup = types.InlineKeyboardMarkup(row_width=2)
-    btn1 = types.InlineKeyboardButton("➕ Add to Group", url=f"http://t.me/{bot.get_me().username}?startgroup=true")
-    btn2 = types.InlineKeyboardButton("💎 Premium", callback_data="premium")
-    btn3 = types.InlineKeyboardButton("ℹ️ About", callback_data="about")
-    btn4 = types.InlineKeyboardButton("👨‍💻 Admin", url="https://t.me/YourAdminUsername")
-    btn5 = types.InlineKeyboardButton("📢 More Channels", url="https://t.me/YourChannel")
-    
-    markup.add(btn1, btn2, btn3, btn4, btn5)
-    
-    welcome_text = (
-        f"Hello {message.from_user.first_name}!\n\n"
-        "I am an AI Powered Bot.\n"
-        "✨ **Commands:**\n"
-        "/shorten [url] - Shorten a link\n"
-        "/sticker [query] - Search stickers\n"
-        "/model - Change AI Model\n\n"
-        "Send me any message to chat!"
-    )
-    bot.reply_to(message, welcome_text, reply_markup=markup, parse_mode="Markdown")
-
-# --- ADMIN COMMANDS ---
+# --- ADMIN PANEL ---
 @bot.message_handler(commands=['admin'])
-def admin_panel(message):
+def admin_menu(message):
     if message.from_user.id != ADMIN_ID:
         return bot.reply_to(message, "❌ Access Denied.")
     
-    markup = types.InlineKeyboardMarkup()
-    markup.add(types.InlineKeyboardButton("Update OpenAI Key", callback_data="set_key"))
-    markup.add(types.InlineKeyboardButton("Change Global Model", callback_data="set_model"))
-    bot.send_message(message.chat.id, "🛠 **Admin Panel**", reply_markup=markup)
+    markup = types.InlineKeyboardMarkup(row_width=1)
+    markup.add(
+        types.InlineKeyboardButton("➕ Add New Model", callback_data="add_model"),
+        types.InlineKeyboardButton("🔄 Switch Model", callback_data="switch_model"),
+        types.InlineKeyboardButton("🔑 Update Tokens", callback_data="update_tokens"),
+        types.InlineKeyboardButton("📊 Current Status", callback_data="status")
+    )
+    bot.send_message(message.chat.id, "🛠 **Admin Control Panel**", reply_markup=markup, parse_mode="Markdown")
 
-# --- URL SHORTENER ---
-@bot.message_handler(commands=['shorten'])
-def handle_shorten(message):
-    url = message.text.split(maxsplit=1)
-    if len(url) < 2:
-        return bot.reply_to(message, "Usage: /shorten https://example.com")
-    short = shorten_url(url[1])
-    bot.reply_to(message, f"🔗 Shortened Link: {short}")
-
-# --- STICKER SEARCH ---
-@bot.message_handler(commands=['sticker'])
-def search_sticker(message):
-    query = message.text.split(maxsplit=1)
-    if len(query) < 2:
-        return bot.reply_to(message, "Usage: /sticker [name]")
-    bot.reply_to(message, f"🔍 Searching for stickers related to: {query[1]}... (Feature requires Sticker Set API)")
-
-# --- CHATGPT LOGIC ---
-@bot.message_handler(func=lambda message: True)
-def handle_message(message):
-    if message.chat.type != 'private' and not message.text.startswith('/'):
-        if not bot.get_me().username in message.text:
-            return # Only reply in groups if mentioned
-
-    try:
-        openai.api_key = bot_settings['openai_key']
-        response = openai.ChatCompletion.create(
-            model=bot_settings['current_model'],
-            messages=[{"role": "user", "content": message.text}]
-        )
-        bot.reply_to(message, response.choices[0].message.content)
-    except Exception as e:
-        bot.reply_to(message, "⚠️ AI Error: Ensure Admin has configured the API Key.")
-
-# --- CALLBACK HANDLERS ---
+# --- CALLBACK HANDLER ---
 @bot.callback_query_handler(func=lambda call: True)
-def callback_query(call):
-    if call.data == "about":
-        bot.answer_callback_query(call.id)
-        bot.send_message(call.message.chat.id, "This bot is created using pyTelegramBotAPI and hosted on Render.")
-    elif call.data == "premium":
-        bot.send_message(call.message.chat.id, "🌟 **Premium Features:**\n- Faster response\n- No limits\n- GPT-4 Access\nContact @Admin for pricing.")
-    elif call.data == "set_model":
-        if call.from_user.id == ADMIN_ID:
-            bot.send_message(call.message.chat.id, "Send the model name (e.g., gpt-4 or gpt-3.5-turbo)")
-            bot.register_next_step_handler(call.message, update_model)
+def handle_query(call):
+    if call.from_user.id != ADMIN_ID:
+        return bot.answer_callback_query(call.id, "Not authorized")
 
-def update_model(message):
-    bot_settings['current_model'] = message.text
-    bot.reply_to(message, f"✅ Model updated to {message.text}")
+    if call.data == "add_model":
+        msg = bot.send_message(call.message.chat.id, "Type the Model Name exactly (e.g., `gpt-4-0613` or `mistralai/Mistral-7B-v0.1`):")
+        bot.register_next_step_handler(msg, save_new_model)
 
+    elif call.data == "switch_model":
+        markup = types.InlineKeyboardMarkup()
+        for model in bot_config["model_list"]:
+            markup.add(types.InlineKeyboardButton(model, callback_data=f"select_{model}"))
+        bot.send_message(call.message.chat.id, "Select the model to set as Active:", reply_markup=markup)
+
+    elif call.data.startswith("select_"):
+        selected = call.data.replace("select_", "")
+        bot_config["active_model"] = selected
+        bot.answer_callback_query(call.id, f"Active Model: {selected}")
+        bot.send_message(call.message.chat.id, f"✅ **Active model changed to:** `{selected}`", parse_mode="Markdown")
+
+    elif call.data == "update_tokens":
+        markup = types.InlineKeyboardMarkup()
+        markup.add(types.InlineKeyboardButton("Update OpenAI Key", callback_data="up_oa"),
+                   types.InlineKeyboardButton("Update HF Token", callback_data="up_hf"))
+        bot.send_message(call.message.chat.id, "Which token do you want to update?", reply_markup=markup)
+
+    elif call.data == "up_oa":
+        msg = bot.send_message(call.message.chat.id, "Send your new OpenAI API Key:")
+        bot.register_next_step_handler(msg, lambda m: update_token(m, "openai_key"))
+
+    elif call.data == "status":
+        status_msg = (
+            f"🤖 **Bot Status**\n\n"
+            f"📍 **Active Model:** `{bot_config['active_model']}`\n"
+            f"🔑 **OpenAI Key:** {'Set ✅' if bot_config['openai_key'] else 'Not Set ❌'}\n"
+            f"🔑 **HF Token:** {'Set ✅' if bot_config['hf_token'] else 'Not Set ❌'}\n"
+            f"📚 **Available Models:** {len(bot_config['model_list'])}"
+        )
+        bot.send_message(call.message.chat.id, status_msg, parse_mode="Markdown")
+
+# --- STEP HANDLERS ---
+def save_new_model(message):
+    model_name = message.text.strip()
+    if model_name not in bot_config["model_list"]:
+        bot_config["model_list"].append(model_name)
+        bot.reply_to(message, f"✅ Added `{model_name}` to your list.", parse_mode="Markdown")
+    else:
+        bot.reply_to(message, "Model already exists in list.")
+
+def update_token(message, key_type):
+    bot_config[key_type] = message.text.strip()
+    bot.reply_to(message, f"✅ {key_type} updated successfully!")
+
+# --- AI LOGIC (SWITCHING BETWEEN OPENAI & HF) ---
+def get_ai_response(prompt):
+    model = bot_config["active_model"]
+    
+    # Logic for OpenAI
+    if "gpt" in model.lower():
+        if not bot_config["openai_key"]: return "❌ OpenAI Key is missing!"
+        openai.api_key = bot_config["openai_key"]
+        response = openai.ChatCompletion.create(
+            model=model,
+            messages=[{"role": "user", "content": prompt}]
+        )
+        return response.choices[0].message.content
+    
+    # Logic for Hugging Face
+    else:
+        if not bot_config["hf_token"]: return "❌ HF Token is missing!"
+        API_URL = f"https://api-inference.huggingface.co/models/{model}"
+        headers = {"Authorization": f"Bearer {bot_config['hf_token']}"}
+        response = requests.post(API_URL, headers=headers, json={"inputs": prompt})
+        try:
+            return response.json()[0]['generated_text']
+        except:
+            return "⚠️ Error: The Hugging Face model might be loading or the name is incorrect."
+
+@bot.message_handler(func=lambda message: True)
+def handle_all_messages(message):
+    # Only respond to text (not stickers) unless it's a private chat
+    if message.chat.type == "private":
+        loading = bot.reply_to(message, "🔍 Thinking...")
+        answer = get_ai_response(message.text)
+        bot.edit_message_text(answer, message.chat.id, loading.message_id)
+
+# --- START BOT ---
 if __name__ == "__main__":
-    # Start Flask in a separate thread
     threading.Thread(target=run_flask).start()
-    # Start Bot polling
     bot.infinity_polling()
