@@ -4,42 +4,31 @@ class Script:
 
 👋 **Greetings, Commander!**
 
-I am your advanced neural assistant, designed 
-for high-speed analysis and intelligent 
-conversation.
+I am your advanced neural assistant, 
+calibrated for high-speed analysis 
+and intelligent solutions.
 
-✨ **Core Features:**
+✨ **Core Capabilities:**
 ◈ **Hybrid Intelligence:** GPT-4 + Mistral
-◈ **Ultra Low Latency:** Instant response
-◈ **Group Ready:** Optimized for chats
+◈ **Sticker Logic:** Visual Thinking Mode
+◈ **Security:** End-to-End Encrypted
 
-⚡ **System Status:** `Operational 🟢`
+⚡ **System Status:** `Optimal 🟢`
 ╰━━━━━━━━━━━━━━━━━━━━━━━━╯
 """
 
     HELP_TXT = """
 📑 **COMMAND INTERFACE**
 ━━━━━━━━━━━━━━━━━━━━
-🚀 `/start` - Restart the Neural Link
-📝 `/register` - Database Enrollment
+🚀 `/start` - Restart System
+📝 `/register` - Enroll in Database
 💎 `/upgrade` - Unlock Elite Tier
-🛰 `/about` - System Specifications
+🆘 `/support` - Human Assistance
 
-**Pro Tip:** Send any text to begin analysis.
+**Pro Tip:** Just talk to me, I understand everything.
 """
 
-    ABOUT_TXT = """
-🛰 **SYSTEM ARCHITECTURE**
-━━━━━━━━━━━━━━━━━━━━
-‣ **Kernel:** Flixora-v4.0
-‣ **AI Provider:** HuggingFace & OpenRouter
-‣ **Encryption:** End-to-End Secure
-‣ **Developer:** [Team Flixora](https://t.me/YourUsername)
-
-*Crafted for peak performance.*
-"""
-
-    AI_THINKING = "⚡ `SYSTEM: JARVIS is processing your query...`"
+    AI_THINKING = "⚡ `SYSTEM: JARVIS is analyzing your request...`"
     
-    # Is sticker ID ko mat chhedna, ye standard thinking sticker hai.
+    # Yeh sticker ID Robot thinking ke liye hai
     THINK_STICKER = "CAACAgEAAxkBAAENXFdn0BvVzY0q7nUqP0y7AAGv-f7_AAIBAQACVp29Ci_fS5vF9gABNgQ"
