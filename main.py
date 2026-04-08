@@ -11,7 +11,7 @@ from script import Script
 logging.basicConfig(level=logging.INFO)
 app = Flask(__name__)
 
-# --- ENV VARIABLES ---
+# --- ENV ---
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
 HF_TOKEN = os.environ.get("HF_TOKEN")
 OPENROUTER_KEY = os.environ.get("OPENROUTER_API_KEY")
@@ -23,8 +23,8 @@ async def get_ai_response(text):
         try:
             url = "https://api-inference.huggingface.co/models/mistralai/Mixtral-8x7B-Instruct-v0.1"
             headers = {"Authorization": f"Bearer {HF_TOKEN}"}
-            res = requests.post(url, headers=headers, json={"inputs": text}, timeout=10)
-            return res.json()[0]['generated_text']
+            res = requests.post(url, headers=headers, json={"inputs": f"User: {text}\nAssistant:"}, timeout=10)
+            return res.json()[0]['generated_text'].split("Assistant:")[-1].strip()
         except: pass
 
     if OPENROUTER_KEY:
@@ -34,59 +34,57 @@ async def get_ai_response(text):
             res = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=data)
             return res.json()['choices'][0]['message']['content']
         except:
-            return "❌ `AI Core is currently offline.`"
+            return "❌ `AI Core is currently unresponsive.`"
 
-# --- TELEGRAM LOGIC ---
+# --- PTB APP ---
+# Hum 'Application' ko manually setup karenge taaki 'Updater' error na aaye
 ptb_app = ApplicationBuilder().token(BOT_TOKEN).build()
 
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    kb = [[InlineKeyboardButton("➕ ADD ME TO YOUR GROUP", url=f"https://t.me/{context.bot.username}?startgroup=true")],
-          [InlineKeyboardButton("🚀 HELP", callback_data="h"), InlineKeyboardButton("🛰 ABOUT", callback_data="a")]]
-    await update.message.reply_text(Script.START_TXT, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+async def start(u, c):
+    kb = [[InlineKeyboardButton("➕ ADD ME TO GROUP", url=f"https://t.me/{c.bot.username}?startgroup=true")],
+          [InlineKeyboardButton("🚀 HELP", callback_data="h")]]
+    await u.message.reply_text(Script.START_TXT, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
 
-async def handle_msg(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if not update.message.text: return
+async def chat(u, c):
+    if not u.message.text: return
+    sticker = await u.message.reply_sticker(Script.THINK_STICKER)
+    status = await u.message.reply_text(Script.AI_THINKING, parse_mode="Markdown")
     
-    # 1. Send Sticker
-    sticker = await update.message.reply_sticker(Script.THINK_STICKER)
-    # 2. Send Thinking Text
-    status = await update.message.reply_text(Script.AI_THINKING, parse_mode="Markdown")
-    
-    # 3. AI logic
-    answer = await get_ai_response(update.message.text)
-    
-    # 4. Final Answer
-    await status.edit_text(f"✨ **FLIXORA AI:**\n\n{answer}", parse_mode="Markdown")
-    # 5. Remove Sticker
-    try: await context.bot.delete_message(chat_id=update.effective_chat.id, message_id=sticker.message_id)
+    ans = await get_ai_response(u.message.text)
+    await status.edit_text(f"✨ **FLIXORA AI:**\n\n{ans}", parse_mode="Markdown")
+    try: await c.bot.delete_message(chat_id=u.effective_chat.id, message_id=sticker.message_id)
     except: pass
 
-async def cb(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    query = update.callback_query
-    await query.answer()
-    if query.data == "h": await query.message.edit_text(Script.HELP_TXT, parse_mode="Markdown")
+async def cb(u, c):
+    await u.callback_query.answer()
+    if u.callback_query.data == "h": await u.callback_query.message.edit_text(Script.HELP_TXT, parse_mode="Markdown")
 
-# Register handlers
+# Register
 ptb_app.add_handler(CommandHandler("start", start))
 ptb_app.add_handler(CallbackQueryHandler(cb))
-ptb_app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_msg))
+ptb_app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, chat))
 
-# --- FLASK WEBHOOK ---
+# --- WEBHOOK LOGIC ---
 @app.route(f"/{BOT_TOKEN}", methods=['POST'])
 async def webhook():
-    update = Update.de_json(request.get_json(force=True), ptb_app.bot)
-    await ptb_app.process_update(update)
-    return "OK", 200
+    if request.method == "POST":
+        update = Update.de_json(request.get_json(force=True), ptb_app.bot)
+        # Manual processing to avoid Updater crash
+        await ptb_app.process_update(update)
+        return "OK", 200
 
 @app.route("/")
-def health(): return "Bot is Alive!", 200
+def health(): return "SYSTEM ONLINE", 200
 
-# Function to set Webhook
-async def setup_webhook():
+# Initialization
+async def setup():
     await ptb_app.initialize()
+    await ptb_app.start()
     await ptb_app.bot.set_webhook(url=f"{WEBHOOK_URL}/{BOT_TOKEN}")
 
+# Run setup
+asyncio.get_event_loop().run_until_complete(setup())
+
 if __name__ == "__main__":
-    asyncio.get_event_loop().run_until_complete(setup_webhook())
     port = int(os.environ.get("PORT", 8080))
     app.run(host="0.0.0.0", port=port)
