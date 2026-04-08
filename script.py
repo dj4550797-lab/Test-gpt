@@ -1,37 +1,53 @@
 class script(object):
+    
     START_TXT = """
-╭━━━━❰ 🌌 **FLIXORA AI** ❱━━━━╮
-  👋 **Hello {name}!**
+✨ **Greetings, Commander!** ⚡
 
-  I am your advanced AI Assistant.
-  Choose an option below to start.
+Welcome to **FLIXORA AI** — your high-performance neural assistant. I’m not just a bot; I’m a sophisticated AI designed to handle your queries with precision and wit.
 
-  ✨ **Features:**
-  ├ 🤖 High-Speed AI Chat
-  ├ 💎 Premium Access
-  └ 🔐 Secure Verification
-╰━━━━━━━━━━━━━━━━━━━━━━╯
-"""
-    
-    REG_LOG_TXT = """
-📥 **NEW USER REGISTERED**
-━━━━━━━━━━━━━━━━━━━━
-👤 **Name:** `{n}`
-📧 **Email:** `{e}`
-📱 **Phone:** `{p}`
-🎂 **DOB:** `{d}`
-🆔 **ID:** `{i}`
-━━━━━━━━━━━━━━━━━━━━
+**What can I do?**
+◈ Provide instant answers via **GPT-4 & Llama-3**.
+◈ Execute complex tasks with zero lag.
+◈ Offer a premium, ad-free experience.
+
+**Status:** `System Online 🟢`
+**User Type:** `{status}`
 """
 
-    AI_THINKING = "⚡ `SYSTEM: JARVIS is processing...`"
-    
-    VERIFY_TXT = """
-🔐 **ACCESS EXPIRED**
+    HELP_TXT = """
+🛠 **COMMAND CENTER**
 ━━━━━━━━━━━━━━━━━━━━
-To maintain server speed, please verify 
-your access for the next 24 hours.
+Here’s how you can interact with me:
 
-[ Tap here to Verify ]({short_url})
-━━━━━━━━━━━━━━━━━━━━
+🚀 **/start** - Wake me up.
+📝 **/register** - Join the elite userbase.
+💎 **/upgrade** - Unlock God-mode features.
+🧠 **/settings** - Switch between AI models.
+🆘 **/support** - Contact my creators.
+
+**Pro Tip:** *Just send me any text, and I'll analyze it instantly!*
 """
+
+    ABOUT_TXT = """
+🛰 **SYSTEM INFORMATION**
+━━━━━━━━━━━━━━━━━━━━
+‣ **Name:** FLIXORA AI PRO
+‣ **Core:** OpenRouter & HuggingFace
+‣ **Architecture:** Python PTB-Async
+‣ **Database:** MongoDB Atlas
+‣ **Developer:** [Your Name](https://t.me/yourusername)
+
+*Built with passion to provide the ultimate AI experience on Telegram.*
+"""
+
+    DESC_TXT = """
+🌟 **WHY FLIXORA AI?**
+━━━━━━━━━━━━━━━━━━━━
+We utilize hybrid AI technology. By combining **OpenRouter** and **HuggingFace Inference**, we ensure that even if one API is down, your JARVIS stays awake.
+
+✅ **Encryption:** End-to-End
+✅ **Memory:** Up to 10 last messages
+✅ **Speed:** ~1.2s response time
+"""
+
+    AI_THINKING = "⚡ `SYSTEM: JARVIS is analyzing your query...`"
