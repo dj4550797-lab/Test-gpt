@@ -1,0 +1,790 @@
+PRODUCT REQUIREMENTS DOCUMENT (PRD)
+
+Vijay Ratna Real Estate AI Ecosystem
+
+Automated 3-Minute Animated Promotional Video
+
+Version: 1.0
+Project Type: Cinematic 3D + Animated UI Promotional Video
+Primary Output: 4K UHD MP4
+Duration: Exactly 180 seconds
+Target Audience: Real estate builders, brokers, agencies, investors and technology clients
+Language: Hindi-English Hinglish
+Privacy Requirement: 100% simulated visuals; no real screen recordings or customer data
+
+---
+
+1. PROJECT OBJECTIVE
+
+Create a premium, cinematic, fully animated promotional video for the Vijay Ratna Real Estate AI Ecosystem.
+
+The video must demonstrate the platform's intended capabilities through fictional, animated software interfaces and cinematic 3D environments.
+
+The finished video must look like a professional technology advertisement, not a slideshow, static presentation or basic screen recording.
+
+The video must combine:
+
+- Cinematic 3D real estate environments.
+- Animated smartphone and desktop devices.
+- Simulated WhatsApp-style chatbot conversations.
+- Animated AI lead extraction and currency parsing.
+- CRM dashboards and lead-scoring animations.
+- A simulated Google review verification workflow.
+- Animated property listings and search filters.
+- Site-visit booking and invoice generation demonstrations.
+- PWA installation and final brand reveal.
+- Hinglish voice-over, synchronized subtitles, music and sound effects.
+
+Important: Build the promotional video itself. Do not build a new application or promotional-video-generator application.
+
+2. NON-GOALS
+
+The agent must not:
+
+1. Build a new real estate website or WhatsApp bot.
+2. Connect to a real WhatsApp account.
+3. access real customer databases or production APIs.
+4. Record an actual phone or browser screen.
+5. Use real client phone numbers, conversations, customer names or transaction records.
+6. Present fictional UI interactions as verified live integrations.
+7. Generate only a storyboard, static mockups or a written script instead of implementing the video.
+8. Claim that rendering succeeded without checking the output file.
+
+The deliverable is a rendered promotional video and its editable production source files.
+
+3. VIDEO SPECIFICATIONS
+
+Parameter| Requirement
+Duration| Exactly 180 seconds
+Resolution| 3840 × 2160
+Aspect ratio| 16:9
+Frame rate| Constant 30 FPS
+Total frames| 5,400
+Container| MP4
+Video codec| H.264
+Pixel format| yuv420p
+Audio codec| AAC stereo
+Audio sample rate| 48 kHz
+Color| SDR Rec. 709
+Primary language| Hinglish
+Subtitle language| Hinglish
+Visual style| Hybrid cinematic 3D + animated UI
+Final quality| Professional commercial advertisement
+
+Create lower-resolution previews before final 4K rendering.
+
+4. CREATIVE DIRECTION
+
+4.1 Visual identity
+
+Use a premium real estate technology aesthetic.
+
+Color palette:
+
+- Midnight Navy: #071426
+- Metallic Gold: #C9A45C
+- Electric Blue: #35B8FF
+- White: #F3F6FA
+- Neutral dark grey for secondary UI
+
+Visual characteristics:
+
+- Cinematic architectural lighting.
+- Realistic materials and reflections.
+- Smooth camera movement.
+- Controlled particle effects.
+- Clean, readable software interfaces.
+- Subtle gold and blue highlights.
+- Professional typography.
+- Consistent spacing, icons and UI components.
+
+Avoid excessive neon, random particles, unnecessary glitch effects, unreadable text and generic stock-video aesthetics.
+
+4.2 Brand assets
+
+Use the approved Vijay Ratna logo if supplied.
+
+If the logo is unavailable, create a temporary text-based logo using the exact project name. Do not invent an official logo or claim that a placeholder is approved.
+
+Use licensed fonts, music and sound effects.
+
+5. REQUIRED PRODUCTION TECHNOLOGY
+
+Use the following architecture unless the existing environment requires a documented alternative.
+
+5.1 Blender
+
+Use Blender for:
+
+- 3D buildings and city environments.
+- Floating smartphones and desktop monitors.
+- Camera paths and cinematic transitions.
+- Lighting, reflections, shadows and depth.
+- Logo reveal and final cinematic composition.
+- Compositing 3D scenes with interface overlays.
+
+5.2 HTML, CSS and JavaScript
+
+Use HTML/CSS/JavaScript for deterministic animated interfaces:
+
+- Chat conversations.
+- Lead extraction cards.
+- Currency parsing animations.
+- CRM dashboards.
+- Review workflow.
+- Property listings and filters.
+- Site-visit booking.
+- Invoice generation.
+- PWA installation demonstration.
+
+Use reusable components rather than duplicating entire interfaces for every scene.
+
+5.3 Browser rendering
+
+Render UI sequences using a controlled browser environment, such as Playwright with Chromium.
+
+Requirements:
+
+- Fixed viewport dimensions.
+- Fixed animation timings.
+- Deterministic sample data.
+- No dependence on live network requests.
+- Fonts and assets loaded before capture.
+- Consistent frame timing.
+- Alpha-channel output where needed.
+
+Use image sequences for reliable rendering and resumable jobs.
+
+5.4 FFmpeg
+
+Use FFmpeg for:
+
+- Concatenating rendered scenes.
+- Adding transitions.
+- Mixing narration, music and sound effects.
+- Synchronizing subtitles.
+- Encoding the final MP4.
+- Validating duration, codec and resolution.
+
+Use Python to orchestrate scene rendering, timing validation and the final pipeline.
+
+6. PROJECT DIRECTORY STRUCTURE
+
+Create the following project structure:
+
+vijay-ratna-promo/
+README.md
+requirements.txt
+config/
+video_config.json
+scene_timeline.json
+asset_manifest.json
+assets/
+logo/
+fonts/
+music/
+sound_effects/
+narration/
+textures/
+ui/
+index.html
+styles/
+components/
+scenes/
+chatbot.html
+budget_parser.html
+lead_crm.html
+review_verification.html
+property_portal.html
+site_visit.html
+invoice.html
+pwa.html
+blender/
+intro.blend
+smartphone_scenes.blend
+property_scenes.blend
+outro.blend
+scripts/
+build_ui.py
+render_ui.py
+render_blender.py
+assemble_video.py
+mix_audio.py
+validate_output.py
+subtitles/
+narration.srt
+renders/
+preview/
+scenes/
+final/
+logs/
+
+Do not generate empty placeholder scripts and mark the project complete. Each required script must perform its documented function.
+
+7. EXACT SCENE TIMELINE
+
+The sum of all scene durations must equal exactly 180 seconds.
+
+SCENE 01 — THE PROBLEM
+
+Time: 00:00–00:10
+Duration: 10 seconds
+
+Visuals:
+
+- Black screen fades into a cinematic nighttime city.
+- Modern buildings rise into view.
+- Multiple fictional property enquiry notifications appear.
+- Some notifications remain unanswered.
+- Camera pushes toward the notifications.
+
+On-screen text:
+
+MISSED ENQUIRIES
+DELAYED RESPONSES
+LOST OPPORTUNITIES
+
+Voice-over:
+
+"Real estate mein har enquiry ek opportunity hai. Lekin delayed responses aur manual follow-ups ki wajah se valuable leads miss ho sakti hain."
+
+Transition: Freeze a notification and transform its outline into the brand emblem.
+
+SCENE 02 — BRAND REVEAL
+
+Time: 00:10–00:20
+Duration: 10 seconds
+
+Visuals:
+
+- A luxury 3D building emerges from a dark reflective surface.
+- Blue and gold data streams travel through the building.
+- The title assembles from illuminated particles.
+
+On-screen text:
+
+VIJAY RATNA
+REAL ESTATE AI ECOSYSTEM
+
+Complete End-to-End Real Estate Automation
+
+Voice-over:
+
+"Presenting Vijay Ratna Real Estate AI Ecosystem — a connected platform for lead management, property discovery aur business automation."
+
+Transition: Camera enters a smartphone.
+
+SCENE 03 — AI WHATSAPP BOT
+
+Time: 00:20–00:40
+Duration: 20 seconds
+
+Visuals:
+
+A fictional buyer types:
+
+"Bhai Pune mein 2BHK chahiye, 70–80 lakh tak, Wakad mein. Buy karna hai."
+
+Display animated extraction:
+
+PURPOSE: Buy
+PROPERTY: 2 BHK
+LOCATION: Wakad, Pune
+BUDGET: ₹70–80 Lakh
+
+Bot asks:
+
+"Aapka shubh naam bata dijiye?"
+
+Fictional customer replies:
+
+"Amit Verma."
+
+On-screen text:
+
+NATURAL LANGUAGE LEAD EXTRACTION
+
+Voice-over:
+
+"Client ko lengthy form bharne ki zaroorat nahi. Woh normal Hindi ya English mein apni requirement batata hai, aur AI-supported lead workflow property type, location, budget aur buying purpose ko structured details mein convert karta hai."
+
+Animation requirements:
+
+- Smooth typing animation.
+- Correct text wrapping.
+- Sequential field extraction.
+- Highlighted information tokens.
+- Realistic but clearly fictional chat UI.
+
+Transition: Budget card expands to fill the frame.
+
+SCENE 04 — SMART BUDGET PARSER
+
+Time: 00:40–00:50
+Duration: 10 seconds
+
+Display these fictional inputs:
+
+₹75 Lakh
+1.5 Cr
+70–80L
+
+Animate:
+
+INPUT → NORMALIZE → MIN/MAX VALUE
+
+Example output:
+
+Minimum: ₹70,00,000
+Maximum: ₹80,00,000
+
+On-screen text:
+
+SMART INDIAN CURRENCY PARSER
+
+Voice-over:
+
+"Indian currency formats — lakh, crore aur budget ranges — ko normalize karke searchable minimum aur maximum values mein convert kiya ja sakta hai."
+
+Transition: Parsed values become a lead summary card.
+
+SCENE 05 — NON-DESTRUCTIVE EDITING
+
+Time: 00:50–01:00
+Duration: 10 seconds
+
+Visuals:
+
+- Display a fictional lead summary.
+- User selects Edit.
+- Only the location field becomes editable.
+- Change Wakad to Baner.
+- Preserve all other fields.
+- Show updated summary.
+
+On-screen text:
+
+EDIT ONE FIELD
+PRESERVE THE REST
+
+Voice-over:
+
+"Requirement change ho? Sirf relevant field update kijiye. Baaki information preserve rahegi, aur updated lead summary dobara confirm ki ja sakti hai."
+
+Transition: Summary cards form a CRM dashboard.
+
+SCENE 06 — LEAD SCORING
+
+Time: 01:00–01:20
+Duration: 20 seconds
+
+Visuals:
+
+- Fictional lead cards appear in a dashboard.
+- Show HOT, WARM and COLD classifications.
+- One example lead receives a score of 92/100.
+- Send a simulated HOT LEAD notification to a floating phone.
+- Display a direct-chat icon.
+
+On-screen text:
+
+LEAD PRIORITIZATION
+HOT / WARM / COLD
+
+Example: 92/100 — HOT
+
+Voice-over:
+
+"Lead scoring sales team ko enquiries prioritize karne mein help karta hai. Configured criteria ke basis par leads ko HOT, WARM ya COLD categories mein organize kiya ja sakta hai, taaki team high-priority enquiries par pehle focus kare."
+
+Requirements:
+
+- Smooth numeric counter.
+- Restrained emphasis animation.
+- No unsupported claim that all leads are automatically qualified.
+- No suggestion that the sample score represents an actual customer.
+
+Transition: A notification line forms a QR-code frame.
+
+SCENE 07 — GOOGLE REVIEW VERIFICATION
+
+Time: 01:20–01:40
+Duration: 20 seconds
+
+Visuals:
+
+- Fictional branded QR poster.
+- Animated phone scans the QR code.
+- A review form opens.
+- Fictional user submits a review.
+- Display an illustrative verification-status workflow.
+- A shield and checkmark appear.
+
+On-screen text:
+
+REVIEW STATUS CHECK
+GOOGLE INTEGRATION
+VERIFICATION RESULT
+
+Voice-over:
+
+"Trust build karne ke liye review workflows ko verification systems ke saath connect kiya ja sakta hai. Review status ka result configured Google integration se verify hone par hi confirm dikhaya jayega."
+
+Requirements:
+
+- The animation must not claim a real API call occurred.
+- Never fabricate a live Google verification result.
+- Do not condition incentives or benefits on a five-star rating.
+- Keep the UI and sample review fictional.
+
+Transition: Shield transforms into a mobile dashboard.
+
+SCENE 08 — MOBILE ADMIN CRM
+
+Time: 01:40–02:00
+Duration: 20 seconds
+
+Show four fictional command demonstrations:
+
+1. /stats
+
+Total Leads: 248
+Hot Leads: 32
+Today's Leads: 18
+
+2. /customers
+
+Display a fictional customer list.
+
+3. /checkreview Amit Verma
+
+Display an illustrative review-status panel.
+
+4. /delete and /restore
+
+Move a fictional customer record into Trash and restore it.
+
+Also display a direct-chat shortcut.
+
+On-screen text:
+
+MANAGE LEADS FROM YOUR PHONE
+
+Voice-over:
+
+"Mobile admin workflow ke through authorized users leads, customer lists, review status aur supported record-management actions access kar sakte hain. Direct chat shortcuts follow-up ko simple banate hain."
+
+Requirements:
+
+- Command text must be readable.
+- Simulated responses must use consistent UI styling.
+- Clearly distinguish demonstration data from production data.
+
+Transition: Phone rotates into a desktop monitor.
+
+SCENE 09 — PROPERTY PORTAL
+
+Time: 02:00–02:15
+Duration: 15 seconds
+
+Visuals:
+
+- Desktop monitor in a premium 3D environment.
+- Fictional property listings.
+- Filters for Buy/Rent, City, Locality, BHK and price.
+- Select Pune, Wakad and 2 BHK.
+- Show an illustrative RERA badge.
+
+On-screen text:
+
+PROPERTY SEARCH
+LOCALITY & BUDGET FILTERS
+
+Voice-over:
+
+"Property portal par buyers locality, budget, BHK aur Buy ya Rent preferences ke through relevant listings explore kar sakte hain. Verified registration information ko listing ke saath display kiya ja sakta hai."
+
+Requirements:
+
+- Use fictional listing content.
+- Never invent an actual RERA registration number.
+- Mark registration badges as illustrative unless verified data is supplied.
+
+Transition: Property card expands into booking interface.
+
+SCENE 10 — BOOKING AND INVOICING
+
+Time: 02:15–02:30
+Duration: 15 seconds
+
+Booking animation:
+
+- Select a fictional property.
+- Choose a date.
+- Choose an available time slot.
+- Display booking confirmation.
+
+Invoice animation:
+
+- Open a fictional closed-deal record.
+- Display brokerage, applicable GST and customer details.
+- Generate a PDF invoice preview.
+
+On-screen text:
+
+SITE VISIT BOOKING
+DIGITAL BROKERAGE INVOICES
+
+Voice-over:
+
+"Site visit scheduling aur digital invoicing jaise workflows booking se billing tak ke operations ko organized rakhne mein help karte hain."
+
+Requirements:
+
+- Use fictional names and amounts.
+- Ensure sample arithmetic is correct.
+- Avoid presenting the invoice as a legally issued transaction document.
+
+Transition: Invoice folds into a mobile frame.
+
+SCENE 11 — BLOG AND PWA
+
+Time: 02:30–02:40
+Duration: 10 seconds
+
+Visuals:
+
+- Fictional market-insights blog.
+- Animated property investment article cards.
+- Mobile browser shows an Add to Home Screen interaction.
+- Portal icon appears on the home screen.
+
+On-screen text:
+
+MARKET INSIGHTS
+SEO-READY CONTENT
+INSTALLABLE WEB EXPERIENCE
+
+Voice-over:
+
+"Market insights, property blogs aur installable Progressive Web App experience platform ko desktop aur mobile users ke liye accessible banane mein help karte hain."
+
+Transition: UI elements connect around a central 3D building.
+
+SCENE 12 — FINAL BRAND REVEAL
+
+Time: 02:40–03:00
+Duration: 20 seconds
+
+Visuals:
+
+- Smartphone, property portal and CRM dashboard orbit a central building.
+- Gold and blue data streams connect all components.
+- Camera pulls back to reveal the ecosystem.
+- Final logo appears.
+- Contact placeholder appears.
+- Hold final end card for at least 3 seconds.
+
+On-screen text:
+
+VIJAY RATNA
+REAL ESTATE AI ECOSYSTEM
+
+AI-ASSISTED LEAD MANAGEMENT
+PROPERTY DISCOVERY
+BUSINESS AUTOMATION
+
+Let's Build Smarter Real Estate Workflows.
+
+[ADD APPROVED CONTACT DETAILS]
+
+Voice-over:
+
+"WhatsApp lead automation se lekar property discovery, site visits aur digital billing tak — Vijay Ratna Real Estate AI Ecosystem ko apne real estate workflows ke liye explore kijiye. Connect with us to know more."
+
+8. AUDIO REQUIREMENTS
+
+Create a professional Hinglish narration track.
+
+Requirements:
+
+- Natural conversational delivery.
+- Clear Indian English pronunciation.
+- Consistent voice identity across all scenes.
+- No clipping or distorted audio.
+- Background music must remain below the narration.
+- Add restrained notification sounds and cinematic transitions.
+- Use licensed or original audio assets.
+- Do not assume an external paid TTS API is available.
+- If TTS is unavailable, generate a narration script and clearly report that audio remains unrendered.
+
+Generate a separate narration file and a separate subtitle file.
+
+The final video must include synchronized subtitles.
+
+9. ANIMATION IMPLEMENTATION REQUIREMENTS
+
+9.1 Deterministic timing
+
+All animations must be repeatable.
+
+Use a centralized timeline configuration. Each scene must define:
+
+- Start time.
+- End time.
+- Frame count.
+- UI animation timing.
+- Camera animation timing.
+- Audio start/end.
+- Transition duration.
+- Required assets.
+
+Do not rely on random animation delays or manual interactive actions during rendering.
+
+9.2 Reusable UI components
+
+Implement reusable components for:
+
+- Chat bubbles.
+- Typing indicators.
+- Information extraction cards.
+- Currency parsing pipeline.
+- Lead score badges.
+- Notification cards.
+- CRM lists.
+- Review status.
+- Property cards.
+- Search filters.
+- Booking calendar.
+- Invoice preview.
+- PWA installation prompt.
+
+Use shared design tokens for colors, typography, spacing, shadows and motion.
+
+9.3 Text rendering
+
+- Render all important UI text as real text, not generated image lettering.
+- Use local fonts to prevent missing-font failures.
+- Maintain readable text sizes at 4K.
+- Avoid excessive text density.
+- Keep subtitles inside safe margins.
+- Verify Hindi-English spelling.
+
+10. 4K RENDERING PIPELINE
+
+Implement a resumable rendering pipeline.
+
+Step 1: Validate installed dependencies.
+
+Step 2: Validate all required assets and configuration.
+
+Step 3: Generate UI animation frames.
+
+Step 4: Render Blender scenes.
+
+Step 5: Composite UI and 3D layers.
+
+Step 6: Generate and validate narration timing.
+
+Step 7: Mix music and sound effects.
+
+Step 8: Add subtitles.
+
+Step 9: Assemble scenes with transitions.
+
+Step 10: Export the final 4K MP4.
+
+Step 11: Inspect the output with ffprobe.
+
+Step 12: Generate a production report.
+
+Use frame sequences to support render recovery. Do not delete successful renders when another scene fails.
+
+Do not rerender unchanged scenes unless necessary.
+
+11. OUTPUT DELIVERABLES
+
+The final project must produce:
+
+1. renders/final/vijay_ratna_promo_4k.mp4
+2. renders/preview/vijay_ratna_preview.mp4
+3. subtitles/narration.srt
+4. assets/narration/voiceover.wav
+5. All generated scene frame sequences.
+6. Editable Blender project files.
+7. Editable HTML/CSS/JavaScript interface source.
+8. Python render and assembly scripts.
+9. config/scene_timeline.json
+10. README.md with installation and rendering instructions.
+11. logs/render_report.json containing actual validation results.
+
+If a requested artifact cannot be generated because of missing tools, assets or hardware, report the exact blocker. Never create a fake output file or claim success without verification.
+
+12. VALIDATION AND ACCEPTANCE CRITERIA
+
+The project is complete only when all applicable checks pass.
+
+Video
+
+- [ ] Final MP4 exists at the specified output path.
+- [ ] Video duration is exactly 180 seconds, within the declared frame-accuracy tolerance.
+- [ ] Resolution is 3840 × 2160.
+- [ ] Frame rate is constant 30 FPS.
+- [ ] Audio stream exists and is synchronized.
+- [ ] All 12 scenes are present in the correct order.
+- [ ] Transitions do not introduce black frames or frozen sequences.
+- [ ] Final end card remains readable.
+- [ ] No missing textures, fonts or UI elements.
+
+Narration and subtitles
+
+- [ ] Hinglish narration is present.
+- [ ] All narration lines fit the timeline.
+- [ ] Subtitles are synchronized.
+- [ ] No sentence is cut off at scene boundaries.
+- [ ] Music does not overpower the narration.
+- [ ] Audio has no clipping.
+
+Privacy and factual accuracy
+
+- [ ] No real customer records are used.
+- [ ] No production API credentials are included.
+- [ ] All demo data is fictional.
+- [ ] Google review verification is represented accurately.
+- [ ] RERA verification is not falsely claimed.
+- [ ] Unsupported performance statistics are omitted.
+- [ ] Contact details are approved before final export.
+
+Production integrity
+
+- [ ] Every scene has a successful render.
+- [ ] The render report contains actual tool output.
+- [ ] A preview video has been generated.
+- [ ] Final MP4 has been inspected.
+- [ ] README documents exact build and render commands.
+- [ ] Missing deliverables are explicitly reported.
+
+13. EXECUTION INSTRUCTIONS FOR THE AI CODING AGENT
+
+Work directly in the designated project directory.
+
+First inspect the available environment, installed software, GPU capability, disk space and existing assets.
+
+Then implement the project in the following phases:
+
+PHASE A — Environment and dependency validation.
+
+PHASE B — Project structure and centralized configuration.
+
+PHASE C — Animated UI components and scene prototypes.
+PHASE D — Blender cinematic environments and transitions.
+PHASE E — Hinglish narration, subtitles and audio mixing.
+PHASE F — Low-resolution preview render.
+PHASE G — Visual and timing corrections.
+PHASE H — Final 4K render.
+PHASE I — Automated output validation and production report.
+Do not stop after writing a plan or creating a folder structure. Implement the actual rendering pipeline and produce the preview first.
+If the environment cannot render the complete video, finish the parts that can be executed, report the blocker and preserve all source files and completed scene renders.
+Do not silently substitute static images for required animations.
+Do not claim that the MP4, voice-over or final render exists unless the files have been generated and checked.
+Final objective: Deliver a professional, fully animated, privacy-preserving 3-minute Vijay Ratna Real Estate AI Ecosystem promotional video in 4K UHD, with editable source files and verified rendering evidence.
